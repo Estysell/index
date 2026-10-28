@@ -711,6 +711,7 @@ html, body {
   }
   .modal-header,
   .bottom-dock,
+  .nav-rail,
   .topbar,
   .bg-ambient {
     display: none !important;
@@ -1492,6 +1493,81 @@ html, body {
   transform: translateX(-50%) translateY(0);
 }
 
+/* ---------- NAV RAIL (OLD TYPE FOR SCREENS ABOVE 1080PX) ---------- */
+.nav-rail {
+  display: none !important; /* Strictly hidden on 1080px and below */
+}
+
+@media (min-width: 1081px) {
+  /* Above 1080px: hide bottom dock completely and show old type right side rail */
+  .bottom-dock {
+    display: none !important;
+  }
+  .app-container {
+    padding-bottom: 16px;
+  }
+  .layout {
+    grid-template-columns: 280px minmax(0, 1fr) 88px;
+    gap: 18px;
+  }
+  .nav-rail {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: var(--radius);
+    padding: 14px 8px;
+    box-shadow: var(--panel-glow);
+    height: 100%;
+    min-height: 0;
+    box-sizing: border-box;
+    align-self: stretch;
+  }
+  .nav-item {
+    background: var(--panel-elevated);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 13px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    transition: var(--transition);
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .nav-item i {
+    font-size: 16px;
+    transition: var(--transition);
+  }
+  .nav-item:hover {
+    border-color: var(--claude-terracotta);
+    color: var(--text-primary);
+    background: var(--claude-terracotta-soft);
+    transform: translateY(-2px);
+  }
+  .nav-item.active {
+    background: var(--claude-shimmer);
+    color: #ffffff;
+    border-color: transparent;
+    font-weight: 600;
+    box-shadow: 0 4px 14px rgba(217, 119, 87, 0.4);
+  }
+  .nav-item.active i {
+    color: #ffffff;
+  }
+}
+
 /* ---------- CLAUDE LIGHT MODE WITH CRISP CARD CONTRAST ---------- */
 body.light-mode {
   --bg-deep: #ebe7de;
@@ -1580,6 +1656,26 @@ body.light-mode .bottom-dock {
   background: rgba(255, 255, 255, 0.94);
   border-color: #e5e2d8;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+body.light-mode .nav-rail {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: #e5e2d8;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+body.light-mode .nav-item {
+  background: #f7f4ec;
+  border-color: #e5e2d8;
+  color: #5c5646;
+}
+body.light-mode .nav-item:hover {
+  background: rgba(217, 119, 87, 0.12);
+  border-color: var(--claude-terracotta);
+  color: var(--claude-terracotta);
+}
+body.light-mode .nav-item.active {
+  background: var(--claude-shimmer);
+  color: #ffffff;
+  border-color: transparent;
 }
 body.light-mode .dock-tooltip {
   background: #1f1e1d;
