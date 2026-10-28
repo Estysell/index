@@ -54,6 +54,10 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
+button, input, select, textarea {
+  font-family: inherit;
+}
+
 /* Above 992px: Strict 100vh Desktop Mode */
 @media (min-width: 993px) {
   html, body {

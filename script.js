@@ -445,20 +445,48 @@ const FONT_FAMILIES = [
 
 function applyFontFamily(fontId) {
   const font = FONT_FAMILIES.find(f => f.id === fontId) || FONT_FAMILIES[0];
+  
+  // 1. Update CSS custom properties for all font tokens
   document.documentElement.style.setProperty('--font-sans', font.stack);
+  document.documentElement.style.setProperty('--font-serif', font.stack);
+  document.documentElement.style.setProperty('--font-main', font.stack);
   document.body.style.fontFamily = font.stack;
 
+  // 2. Inject or update dynamic override style to cascade to the entire website
+  let dynamicStyle = document.getElementById('dynamic-font-override');
+  if (!dynamicStyle) {
+    dynamicStyle = document.createElement('style');
+    dynamicStyle.id = 'dynamic-font-override';
+    document.head.appendChild(dynamicStyle);
+  }
+  dynamicStyle.textContent = `
+    body,
+    h1, h2, h3, h4, h5, h6,
+    p, a, button:not(.font-card-btn), input, textarea, label,
+    span:not([class*="fa"]):not(.font-card-sample):not(.font-card-name):not(.font-card-badge),
+    .logo, .name, .role-badge, .panel-title, .panel-subtitle, .about-text,
+    .stat-num, .stat-label, .service-card h4, .service-card p,
+    .exp-item h3, .exp-date, .exp-item p,
+    .project-card h3, .project-card p, .project-tags span, .project-btn,
+    .skill-tile span, .contact-row span, .send-btn, .resume-btn,
+    .dock-tooltip, .nav-item span, .modal-title, .modal-btn,
+    .resume-paper, .resume-paper h2, .resume-paper h3, .resume-paper p, .resume-paper span, .resume-paper li {
+      font-family: ${font.stack} !important;
+    }
+  `;
+
+  // 3. Update active card in modal
   document.querySelectorAll('.font-card-btn').forEach(card => {
     card.classList.toggle('active', card.dataset.id === font.id);
   });
 
+  // 4. Persist in localStorage
   localStorage.setItem('portfolio-font-family', font.id);
 }
 
+const savedFont = localStorage.getItem('portfolio-font-family') || 'inter';
 const fontsGrid = document.getElementById('fontsGrid');
 if (fontsGrid) {
-  const savedFont = localStorage.getItem('portfolio-font-family') || 'inter';
-
   FONT_FAMILIES.forEach(font => {
     const card = document.createElement('button');
     card.className = `font-card-btn ${font.id === savedFont ? 'active' : ''}`;
@@ -474,9 +502,8 @@ if (fontsGrid) {
     });
     fontsGrid.appendChild(card);
   });
-
-  applyFontFamily(savedFont);
 }
+applyFontFamily(savedFont);
 
 // ==========================================
 // RESUME MODAL VIEWER
